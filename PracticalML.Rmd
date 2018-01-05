@@ -1,0 +1,68 @@
+---
+title: "Practical Machine Learning"
+author: "Konstantinos"
+date: "5 January 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introduction
+
+# Data
+
+```{r message=FALSE, warning=FALSE}
+library(randomForest)
+library(ggplot2)
+library(RColorBrewer)
+library(ggthemes)
+library(scales)
+library(caret)
+library(dplyr)
+```
+
+
+## Read Dataset
+```{r}
+train <- read.csv("pml-training.csv",na.strings = c('NA',''))
+test <- read.csv("pml-testing.csv",na.strings = c('NA',''))
+train <- train[,(colSums(is.na(train)) == 0)]
+test <- test[,(colSums(is.na(test)) == 0)]
+variables <- names(train)
+train <- select(train,-X)
+test <- select(test,-X)
+```
+
+- Validation data set
+
+```{r}
+s <- sample(dim(train)[1],size = 0.7*dim(train)[1],replace = F)
+train_set <- train[s,]
+val_set <- train[-s,]
+```
+
+
+
+# Exploratory (Basic)
+
+
+# Model (Random Forest ?? )
+```{r}
+rf_all <- randomForest(train_set[,-59],train_set[,59])
+
+col_index <- varImp(rf_all) %>% 
+  mutate(names=row.names(.)) %>%
+  arrange(-Overall)
+imp_names <- col_index$names[1:15]
+
+rf_few <- randomForest(train_set[,imp_names],train_set[,59])
+
+```
+
+
+## Variable Selection
+## Cross Validation
+# Conclusions
+
